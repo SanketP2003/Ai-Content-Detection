@@ -15,7 +15,7 @@ import java.util.Map;
 
 @CrossOrigin(origins = "https://ai-content-detection-dun.vercel.app/")
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/chat")
 public class AdvisorController {
 
     private final WebClient webClient;
@@ -28,7 +28,7 @@ public class AdvisorController {
         this.webClient = webClient;
     }
 
-    @PostMapping("/chat")
+    @PostMapping
     public Mono<ResponseEntity<String>> chatWithAdvisor(@RequestBody Map<String, String> request) {
         return webClient.post()
                 .uri("/api/generate")
