@@ -79,7 +79,7 @@ body {
 }
 
 .code-block {
-  background: rgba(0, 0, 0, 0.3) !important;
+  background: rgba(223, 223, 223, 0.3) !important;
   border-radius: 8px;
   padding: 1rem !important;
   margin: 1rem 0;
