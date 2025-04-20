@@ -1,7 +1,7 @@
 # Use Maven to build the project
 FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /app
-COPY src .
+COPY . .
 RUN mvn clean package -DskipTests
 
 # Use OpenJDK to run the app
