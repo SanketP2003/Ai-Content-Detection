@@ -15,7 +15,7 @@ import java.util.Map;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/api/chat")
+@RequestMapping("/api")
 public class AdvisorController {
 
     private final WebClient webClient;
