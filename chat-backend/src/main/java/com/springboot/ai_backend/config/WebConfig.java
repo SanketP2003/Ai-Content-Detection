@@ -30,7 +30,8 @@ public class WebConfig {
 
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("*") // or specify your frontend URL
+                .allowedOrigins("https://ai-content-detection-fdpu.onrender.com/api/chat") // or specify your frontend URL
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedMethods("*");
     }
 }
