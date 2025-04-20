@@ -71,7 +71,7 @@ const Advisor = ({ username }: { username: string }) => {
     dispatch({ type: 'SET_LOADING' });
 
     try {
-      const response = await fetch('https://ai-content-detection-fdpu.onrender.com/api/chat', {
+      const response = await fetch('https://ai-content-detection-fdpu.onrender.com/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt: input }),
