@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 import java.util.Map;
 
-@CrossOrigin(origins = "https://ai-content-detection-dun.vercel.app/")
+@CrossOrigin(origins = "https://ai-content-detection-dun.vercel.app/dashboard")
 @RestController
 @RequestMapping("/api/chat")
 public class AdvisorController {
