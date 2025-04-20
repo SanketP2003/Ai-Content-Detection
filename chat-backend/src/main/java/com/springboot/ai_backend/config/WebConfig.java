@@ -2,6 +2,7 @@ package com.springboot.ai_backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.config.CorsRegistry;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.WebFilter;
 
@@ -25,5 +26,11 @@ public class WebConfig {
         return WebClient.builder()
                 .baseUrl("http://localhost:11434")
                 .build();
+    }
+
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("*") // or specify your frontend URL
+                .allowedMethods("*");
     }
 }

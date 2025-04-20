@@ -13,6 +13,7 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 import java.util.Map;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/chat")
 public class AdvisorController {
