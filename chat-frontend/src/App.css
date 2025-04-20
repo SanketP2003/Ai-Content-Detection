@@ -70,7 +70,7 @@ body {
 
 .message-bubble.user {
   background: rgba(63, 114, 175, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(14, 55, 113, 0.1);
 }
 
 .message-bubble.bot {
