@@ -13,6 +13,7 @@ interface Message {
   timestamp: number;
 }
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 const chatReducer = (state: any, action: any) => {
   switch (action.type) {
     case 'ADD_USER_MESSAGE':
@@ -71,7 +72,7 @@ const Advisor = ({ username }: { username: string }) => {
     dispatch({ type: 'SET_LOADING' });
 
     try {
-      const response = await fetch('https://ai-content-detection-fdpu.onrender.com/api/chat', {
+      const response = await fetch(`${API_BASE_URL}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt: input }),
