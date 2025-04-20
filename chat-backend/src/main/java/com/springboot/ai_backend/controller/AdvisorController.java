@@ -33,15 +33,26 @@ public class AdvisorController {
 
     @PostMapping("/chat")
     public Mono<ResponseEntity<String>> chatWithAdvisor(@RequestBody Map<String, String> request) {
-        String prompt = request.get("prompt");
-
-        System.out.println("Received prompt: " + prompt); // 🔍 Log for backend verification
-
-        String mockResponse = "🤖 Mocked response to: " + prompt;
-
-        return Mono.just(ResponseEntity.ok(mockResponse));
+        return webClient.post()
+                .uri(modelApiUrl)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(Map.of(
+                        "model", "mistral:7b",
+                        "prompt", request.get("prompt"),
+                        "system", SYSTEM_PROMPT,
+                        "options", Map.of(
+                                "temperature", 0.3,
+                                "max_tokens", 300
+                        ),
+                        "stream", false
+                ))
+                .retrieve()
+                .bodyToMono(String.class)
+                .map(response -> ResponseEntity.ok().body(parseResponse(response)))
+                .timeout(Duration.ofSeconds(10))
+                .onErrorReturn(ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT)
+                        .body("Our chat advisor is currently busy. Please try again shortly."));
     }
-
 
     private String parseResponse(String json) {
         try {
