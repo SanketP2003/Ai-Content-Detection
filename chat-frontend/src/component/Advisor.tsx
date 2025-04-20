@@ -72,7 +72,7 @@ const Advisor = ({ username }: { username: string }) => {
     dispatch({ type: 'SET_LOADING' });
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/chat`, {
+      const response = await fetch(`http://localhost:8080/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt: input }),
