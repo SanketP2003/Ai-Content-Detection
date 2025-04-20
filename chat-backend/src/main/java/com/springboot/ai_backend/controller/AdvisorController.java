@@ -28,7 +28,7 @@ public class AdvisorController {
         this.webClient = webClient;
     }
 
-    @PostMapping
+    @PostMapping("/chat")
     public Mono<ResponseEntity<String>> chatWithAdvisor(@RequestBody Map<String, String> request) {
         return webClient.post()
                 .uri("/api/generate")

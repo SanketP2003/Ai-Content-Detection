@@ -54,7 +54,7 @@ body {
 
 /* =============== CHAT ADVISOR =============== */
 .chat-interface {
-  background: rgba(6, 35, 101, 0.25);
+  background: rgba(25, 25, 25, 0.25);
   backdrop-filter: blur(10px);
   border-radius: 16px;
   padding: 2rem;
