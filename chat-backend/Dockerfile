@@ -1,26 +1,26 @@
-# Use an official Maven image to build the app
+# Use an official Maven image to build the application
 FROM maven:3.9.6-eclipse-temurin-17 AS build
 
-# Set work directory
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy project files
+# Copy the project files into the container
 COPY . .
 
-# Build the application
+# Build the application and skip tests
 RUN mvn clean package -DskipTests
 
-# Use an OpenJDK runtime to run the application
+# Use an official OpenJDK runtime as the base image
 FROM eclipse-temurin:17-jdk
 
-# Set working directory
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy jar from the builder stage
+# Copy the built JAR file from the previous stage
 COPY --from=build /app/target/*.jar app.jar
 
-# Expose the port your app runs on
+# Expose the port the application runs on
 EXPOSE 8080
 
-# Run the app
+# Define the command to run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
