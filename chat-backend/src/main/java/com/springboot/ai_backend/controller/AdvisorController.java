@@ -3,6 +3,7 @@ package com.springboot.ai_backend.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +14,13 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 import java.util.Map;
 
-@CrossOrigin(origins = "https://ai-content-detection-dun.vercel.app/dashboard")
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api")
 public class AdvisorController {
 
+    @Value("${ai.model.api.url}")
+    private String modelApiUrl;
     private final WebClient webClient;
     private static final String SYSTEM_PROMPT = "You are a professional chat advisor specialized in providing " +
             "concise and helpful advice. Respond in a friendly, conversational tone while maintaining " +
@@ -31,7 +34,7 @@ public class AdvisorController {
     @PostMapping("/chat")
     public Mono<ResponseEntity<String>> chatWithAdvisor(@RequestBody Map<String, String> request) {
         return webClient.post()
-                .uri("/api/generate")
+                .uri(modelApiUrl)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(Map.of(
                         "model", "mistral:7b",
