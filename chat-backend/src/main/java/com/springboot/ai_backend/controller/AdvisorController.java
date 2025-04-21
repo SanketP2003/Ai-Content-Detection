@@ -11,10 +11,7 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.List;
 
-@CrossOrigin(origins = {
-        "http://localhost:3000",
-        "https://ai-content-detection-zeta.vercel.app"
-})
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api")
 public class AdvisorController {
