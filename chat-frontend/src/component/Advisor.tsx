@@ -101,11 +101,11 @@ const Advisor = ({ username }: { username: string }) => {
 
       const botMessage: Message = {
         id: `bot-${Date.now()}`,
-        content: data,
+        content: data.candidates[0].content.parts[0].text,
         isBot: true,
         timestamp: Date.now(),
       };
-
+      
       dispatch({ type: 'ADD_BOT_MESSAGE', payload: botMessage });
     } catch (err) {
       dispatch({ type: 'SET_ERROR', payload: err instanceof Error ? err.message : 'Request failed' });
