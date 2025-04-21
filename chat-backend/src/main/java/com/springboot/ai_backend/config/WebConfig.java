@@ -2,36 +2,21 @@ package com.springboot.ai_backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.reactive.config.CorsRegistry;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.server.WebFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig {
     @Bean
-    public WebFilter corsFilter() {
-        return (exchange, chain) -> {
-            exchange.getResponse().getHeaders()
-                    .add("Access-Control-Allow-Origin", "*");
-            exchange.getResponse().getHeaders()
-                    .add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-            exchange.getResponse().getHeaders()
-                    .add("Access-Control-Allow-Headers", "Content-Type");
-            return chain.filter(exchange);
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/api/**")
+                        .allowedOrigins("http://localhost:3000")  // React's default port
+                        .allowedMethods("GET", "POST", "PUT", "DELETE")
+                        .allowedHeaders("*");
+            }
         };
-    }
-
-    @Bean
-    public WebClient webClient() {
-        return WebClient.builder()
-                .baseUrl("http://localhost:11434")
-                .build();
-    }
-
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("https://ai-content-detection-fdpu.onrender.com/api/chat") // or specify your frontend URL
-                .allowedMethods("GET", "POST", "PUT", "DELETE")
-                .allowedMethods("*");
     }
 }

@@ -9,28 +9,20 @@ import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.util.Map;
+import java.util.List;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api")
 public class AdvisorController {
 
     private final WebClient webClient;
 
-    @Value("${llama.api.url}")
-    private String llamaApiUrl;
+    @Value("${gemini.api.url}")
+    private String geminiApiUrl;
 
-    @Value("${llama.api.key}")
-    private String llamaApiKey;
-
-    @Value("${llama.model}")
-    private String model;
-
-    @Value("${llama.temperature}")
-    private double temperature;
-
-    @Value("${llama.max-tokens}")
-    private int maxTokens;
+    @Value("${gemini.api.key}")
+    private String geminiApiKey;
 
     private static final String SYSTEM_PROMPT = "You are a professional chat advisor specialized in providing concise and helpful advice. Respond in a friendly, conversational tone while maintaining professionalism. Keep responses clear and focused on the user's questions.";
 
@@ -39,33 +31,37 @@ public class AdvisorController {
     }
 
     @PostMapping("/chat")
-    public Mono<ResponseEntity<String>> chatWithLlama(@RequestBody Map<String, String> request) {
+    public Mono<ResponseEntity<String>> chatWithGemini(@RequestBody Map<String, String> request) {
         String userPrompt = request.get("prompt");
 
         Map<String, Object> payload = Map.of(
-                "model", model,
-                "temperature", temperature,
-                "max_tokens", maxTokens,
-                "messages", new Object[]{
-                        Map.of("role", "system", "content", SYSTEM_PROMPT),
-                        Map.of("role", "user", "content", userPrompt)
-                }
+                "contents", List.of(
+                        Map.of("role", "user", "parts", List.of(
+                                Map.of("text", SYSTEM_PROMPT + "\n\n" + userPrompt)
+                        ))
+                )
         );
 
         return webClient.post()
-                .uri(llamaApiUrl)
-                .header("Authorization", "Bearer " + llamaApiKey)
+                .uri(geminiApiUrl + "?key=" + geminiApiKey)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(payload)
                 .retrieve()
                 .bodyToMono(Map.class)
-                .timeout(Duration.ofSeconds(15))
+                .timeout(Duration.ofSeconds(60))
                 .map(response -> {
-                    String content = ((Map)((Map)((java.util.List) response.get("choices")).get(0)).get("message")).get("content").toString();
-                    return ResponseEntity.ok(content);
+                    try {
+                        List<?> candidates = (List<?>) response.get("candidates");
+                        Map candidate = (Map) candidates.get(0);
+                        Map content = (Map) candidate.get("content");
+                        List parts = (List) content.get("parts");
+                        Map part = (Map) parts.get(0);
+                        String result = part.get("text").toString();
+                        return ResponseEntity.ok(result);
+                    } catch (Exception ex) {
+                        return ResponseEntity.internalServerError().body("Invalid response structure from Gemini: " + ex.getMessage());
+                    }
                 })
-                .onErrorResume(e -> {
-                    return Mono.just(ResponseEntity.internalServerError().body("Error: " + e.getMessage()));
-                });
+                .onErrorResume(e -> Mono.just(ResponseEntity.internalServerError().body("Error: " + e.getMessage())));
     }
 }

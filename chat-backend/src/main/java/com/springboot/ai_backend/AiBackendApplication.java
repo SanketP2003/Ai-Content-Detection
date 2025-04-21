@@ -2,6 +2,7 @@ package com.springboot.ai_backend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.reactive.config.EnableWebFlux;
 
 @SpringBootApplication(exclude = {
@@ -13,3 +14,4 @@ public class AiBackendApplication {
 		SpringApplication.run(AiBackendApplication.class, args);
 	}
 }
+
