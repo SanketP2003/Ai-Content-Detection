@@ -94,21 +94,20 @@ const Advisor = ({ username }: { username: string }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt: input }),
       });
-    
-      if (!response.ok) throw new Error('Failed to get response');
-    
-      // Parse the response as JSON
-      const data = await response.json();
       
-      // Assuming the structure is as described earlier
+      if (!response.ok) throw new Error('Failed to get response');
+      
+      const data = await response.text(); // ✅ this line fixes the issue
+      console.log('Received:', data);
+      
       const botMessage: Message = {
         id: `bot-${Date.now()}`,
-        content: data.candidates[0].content.parts[0].text, // Extract the text from the response
+        content: data,
         isBot: true,
         timestamp: Date.now(),
       };
-    
-      dispatch({ type: 'ADD_BOT_MESSAGE', payload: botMessage });
+      
+      dispatch({ type: 'ADD_BOT_MESSAGE', payload: botMessage });      
     } catch (err) {
       dispatch({ type: 'SET_ERROR', payload: err instanceof Error ? err.message : 'Request failed' });
     }
