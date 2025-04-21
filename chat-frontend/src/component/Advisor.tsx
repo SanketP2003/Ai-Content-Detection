@@ -26,7 +26,7 @@ type Action =
   | { type: 'CLEAR_CHAT' }
   | { type: 'LOAD_MESSAGES'; payload: Message[] };
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8080';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'hhttps://ai-content-detection-fdpu.onrender.com';
 
 const chatReducer = (state: State, action: Action): State => {
   switch (action.type) {
