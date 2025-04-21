@@ -31,7 +31,7 @@ public class AdvisorController {
     }
 
     @PostMapping("/chat")
-    public Mono<ResponseEntity<String>> chatWithGemini(@RequestBody Map<String, String> request) {
+    public Mono<ResponseEntity<Map<String, String>>> chatWithGemini(@RequestBody Map<String, String> request) {
         String userPrompt = request.get("prompt");
 
         Map<String, Object> payload = Map.of(
@@ -57,11 +57,13 @@ public class AdvisorController {
                         List parts = (List) content.get("parts");
                         Map part = (Map) parts.get(0);
                         String result = part.get("text").toString();
-                        return ResponseEntity.ok(result);
+                        return ResponseEntity.ok(Map.of("text", result)); // ✅ Return as JSON
                     } catch (Exception ex) {
-                        return ResponseEntity.internalServerError().body("Invalid response structure from Gemini: " + ex.getMessage());
+                        return ResponseEntity.internalServerError()
+                                .body(Map.of("error", "Invalid response structure from Gemini: " + ex.getMessage()));
                     }
                 })
-                .onErrorResume(e -> Mono.just(ResponseEntity.internalServerError().body("Error: " + e.getMessage())));
+                .onErrorResume(e -> Mono.just(ResponseEntity.internalServerError()
+                        .body(Map.of("error", "Error: " + e.getMessage()))));
     }
 }
