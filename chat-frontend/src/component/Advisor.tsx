@@ -1,7 +1,6 @@
-import React, { useReducer, useEffect, useRef } from 'react';
+import React, { useReducer, useEffect, useRef, JSX } from 'react';
 import { 
-  Form, Button, Alert, Spinner,
-  InputGroup
+  Form, Button, Alert, Spinner, InputGroup 
 } from 'react-bootstrap';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -13,8 +12,23 @@ interface Message {
   timestamp: number;
 }
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
-const chatReducer = (state: any, action: any) => {
+interface State {
+  messages: Message[];
+  isLoading: boolean;
+  error: string;
+}
+
+type Action =
+  | { type: 'ADD_USER_MESSAGE'; payload: Message }
+  | { type: 'ADD_BOT_MESSAGE'; payload: Message }
+  | { type: 'SET_LOADING' }
+  | { type: 'SET_ERROR'; payload: string }
+  | { type: 'CLEAR_CHAT' }
+  | { type: 'LOAD_MESSAGES'; payload: Message[] };
+
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8080';
+
+const chatReducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'ADD_USER_MESSAGE':
       return { ...state, messages: [...state.messages, action.payload] };
@@ -25,7 +39,10 @@ const chatReducer = (state: any, action: any) => {
     case 'SET_ERROR':
       return { ...state, isLoading: false, error: action.payload };
     case 'CLEAR_CHAT':
+      localStorage.removeItem('chatHistory');
       return { ...state, messages: [] };
+    case 'LOAD_MESSAGES':
+      return { ...state, messages: action.payload };
     default:
       return state;
   }
@@ -72,14 +89,14 @@ const Advisor = ({ username }: { username: string }) => {
     dispatch({ type: 'SET_LOADING' });
 
     try {
-      const response = await fetch(`http://localhost:8080/api/chat`, {
+      const response = await fetch(`${API_BASE_URL}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt: input }),
       });
 
       if (!response.ok) throw new Error('Failed to get response');
-      
+
       const data = await response.text();
 
       const botMessage: Message = {
@@ -97,23 +114,23 @@ const Advisor = ({ username }: { username: string }) => {
 
   const formatCodeBlocks = (content: string) => {
     const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
-    const parts = [];
+    const parts: (string | JSX.Element)[] = [];
     let lastIndex = 0;
-    
+
     content.replace(codeBlockRegex, (match, lang, code, offset) => {
       parts.push(content.slice(lastIndex, offset));
       parts.push(
         <div className="code-block position-relative" key={offset}>
-          <SyntaxHighlighter 
-            language={lang || 'javascript'} 
+          <SyntaxHighlighter
+            language={lang || 'javascript'}
             style={vscDarkPlus}
             customStyle={{ borderRadius: '8px', padding: '1rem' }}
           >
             {code.trim()}
           </SyntaxHighlighter>
-          <Button 
+          <Button
             variant="outline-light"
-            size="sm" 
+            size="sm"
             className="position-absolute top-0 end-0 m-2"
             onClick={() => navigator.clipboard.writeText(code.trim())}
           >
@@ -124,7 +141,7 @@ const Advisor = ({ username }: { username: string }) => {
       lastIndex = offset + match.length;
       return match;
     });
-    
+
     parts.push(content.slice(lastIndex));
     return parts;
   };
@@ -132,13 +149,10 @@ const Advisor = ({ username }: { username: string }) => {
   const renderMessage = (message: Message) => (
     <div key={message.id} className={`d-flex ${message.isBot ? 'justify-content-start' : 'justify-content-end'} mb-2`}>
       <div className={`message-bubble ${message.isBot ? 'bot' : 'user'}`}>
-        <div className="message-content">
-          {formatCodeBlocks(message.content)}
-        </div>
+        <div className="message-content">{formatCodeBlocks(message.content)}</div>
         <div className="message-meta">
           <small className="text-muted">
-            {new Date(message.timestamp).toLocaleTimeString()} • 
-            {message.isBot ? ' AI Advisor' : ` ${username}`}
+            {new Date(message.timestamp).toLocaleTimeString()} • {message.isBot ? ' AI Advisor' : ` ${username}`}
           </small>
         </div>
       </div>
@@ -177,9 +191,12 @@ const Advisor = ({ username }: { username: string }) => {
             placeholder="Ask your question..."
             style={{ borderRadius: '20px', resize: 'none' }}
           />
-          <Button variant="primary" type="submit" 
-                  disabled={state.isLoading || !input.trim()} 
-                  style={{ borderRadius: '0 20px 20px 0' }}>
+          <Button
+            variant="primary"
+            type="submit"
+            disabled={state.isLoading || !input.trim()}
+            style={{ borderRadius: '0 20px 20px 0' }}
+          >
             {state.isLoading ? 'Sending...' : 'Send'}
           </Button>
         </InputGroup>
