@@ -102,7 +102,7 @@ const Advisor = ({ username }: { username: string }) => {
       
       const botMessage: Message = {
         id: `bot-${Date.now()}`,
-        content: data,
+        content: data.text, // extract only the text field
         isBot: true,
         timestamp: Date.now(),
       };
