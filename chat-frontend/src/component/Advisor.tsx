@@ -97,7 +97,7 @@ const Advisor = ({ username }: { username: string }) => {
       
       if (!response.ok) throw new Error('Failed to get response');
       
-      const data = await response.text(); // ✅ this line fixes the issue
+      const data = await response.json();
       console.log('Received:', data);
       
       const botMessage: Message = {
