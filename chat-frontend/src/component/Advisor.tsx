@@ -97,7 +97,7 @@ const Advisor = ({ username }: { username: string }) => {
 
       if (!response.ok) throw new Error('Failed to get response');
 
-      const data = await response.text();
+      const data = await response.json();
 
       const botMessage: Message = {
         id: `bot-${Date.now()}`,
