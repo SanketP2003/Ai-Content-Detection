@@ -4,6 +4,7 @@ import {
 } from 'react-bootstrap';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import './Advisor.css'; // Assuming you have a CSS file for styles
 
 interface Message {
   id: string;

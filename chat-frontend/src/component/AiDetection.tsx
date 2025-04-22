@@ -4,6 +4,7 @@ import {
   Card, Row, Col, Badge, Form, InputGroup
 } from 'react-bootstrap';
 import { saveAs } from 'file-saver';
+import './AiDetection.css'; // Assuming you have a CSS file for styles
 
 interface DetectionResult {
   probability: number;
