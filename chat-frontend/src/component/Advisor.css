@@ -47,6 +47,7 @@
   .message-meta small {
     opacity: 0.8;
     font-size: 0.75rem;
+    color: aliceblue;
   }
   
   .code-block {
