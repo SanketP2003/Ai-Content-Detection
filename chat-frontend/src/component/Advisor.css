@@ -35,8 +35,15 @@
   .message-bubble.bot {
     background: rgba(7, 40, 96, 0.9);
     border: 1px solid rgba(255, 255, 255, 0.15);
+    background-color: rgb(205, 217, 238);
   }
   
+  .message-content {
+    color: #c6d4e9;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
   .message-meta small {
     opacity: 0.8;
     font-size: 0.75rem;
