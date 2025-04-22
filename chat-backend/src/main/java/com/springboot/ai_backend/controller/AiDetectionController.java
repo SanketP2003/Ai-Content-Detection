@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/detect")
 public class AiDetectionController {
 
@@ -46,7 +47,7 @@ public class AiDetectionController {
     }
 
     @PostMapping("/bulk-ai")
-    public Mono<? extends ResponseEntity<?>> detectContent(@RequestBody Map<String, String> request) {
+    public Mono<ResponseEntity<?>> detectContent(@RequestBody Map<String, String> request) {
         String textToAnalyze = request.get("text");
 
         if (textToAnalyze == null || textToAnalyze.trim().isEmpty()) {
@@ -72,22 +73,33 @@ public class AiDetectionController {
                     try {
                         Map<String, Object> map = objectMapper.readValue(responseBody, new TypeReference<>() {});
                         List<?> candidates = (List<?>) map.get("candidates");
-                        Map candidate = (Map) candidates.get(0);
-                        Map content = (Map) candidate.get("content");
-                        List parts = (List) content.get("parts");
-                        Map part = (Map) parts.get(0);
-                        String jsonText = part.get("text").toString();
+                        Map<?, ?> candidate = (Map<?, ?>) candidates.get(0);
+                        Map<?, ?> content = (Map<?, ?>) candidate.get("content");
+                        List<?> parts = (List<?>) content.get("parts");
+                        Map<?, ?> part = (Map<?, ?>) parts.get(0);
+                        String rawText = part.get("text").toString();
 
+                        // Remove markdown code block if present
+                        String jsonText = rawText.trim();
+                        if (jsonText.startsWith("```")) {
+                            int firstNewline = jsonText.indexOf('\n');
+                            int lastBacktick = jsonText.lastIndexOf("```");
+                            if (firstNewline != -1 && lastBacktick != -1) {
+                                jsonText = jsonText.substring(firstNewline + 1, lastBacktick).trim();
+                            }
+                        }
+
+                        @SuppressWarnings("unchecked")
                         Map<String, Object> parsed = objectMapper.readValue(jsonText, new TypeReference<>() {});
-                        return Mono.just(ResponseEntity.ok(parsed));
+                        return Mono.just((ResponseEntity<?>) ResponseEntity.ok(parsed));
 
                     } catch (Exception e) {
-                        return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        return Mono.just((ResponseEntity<?>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                                 .body(Map.of("error", "Failed to parse Gemini response", "details", e.getMessage())));
                     }
                 })
                 .onErrorResume(err ->
-                        Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        Mono.just((ResponseEntity<?>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                                 .body(Map.of("error", "Gemini request failed", "details", err.getMessage())))
                 );
     }
