@@ -29,7 +29,7 @@ const GetStartedPage = () => {
           <h1 className="text-center mb-4 gradient-text">Welcome to AI Advisor</h1>
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-4">
-              <Form.Label className="text-primary">Enter Your Name</Form.Label>
+              <Form.Label className="bg-primary">Enter Your Name</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="John Doe"

@@ -176,7 +176,7 @@ const Advisor = ({ username }: { username: string }) => {
           <div className="d-flex justify-content-start mb-2">
             <div className="message-bubble bot">
               <Spinner animation="border" size="sm" />
-              <span className="ms-2 text-primary">Generating response...</span>
+              <span className="ms-2 bg-primary">Generating response...</span>
             </div>
           </div>
         )}
