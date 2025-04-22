@@ -16,6 +16,8 @@ interface DetectionResult {
   analysis: string;
 }
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
 const AiDetection = () => {
   const [detectionText, setDetectionText] = useState('');
   const [detectionResult, setDetectionResult] = useState<DetectionResult | null>(null);
@@ -45,7 +47,7 @@ const AiDetection = () => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:8080/api/detect/bulk-ai', {
+      const response = await fetch(`${API_BASE_URL}/api/detect/bulk-ai`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: detectionText }),
