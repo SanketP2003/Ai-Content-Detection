@@ -47,9 +47,12 @@
   .message-meta small {
     opacity: 0.8;
     font-size: 0.75rem;
-    color: aliceblue;
   }
   
+  .text-muted {
+    color: rgba(181, 202, 233, 0.884);
+  }
+
   .code-block {
     position: relative;
     margin: 1rem 0;
