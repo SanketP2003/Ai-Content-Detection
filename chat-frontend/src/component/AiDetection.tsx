@@ -95,7 +95,7 @@ const AiDetection = () => {
           rows={10}
           value={detectionText}
           onChange={(e) => setDetectionText(e.target.value)}
-          placeholder="Paste your text here (minimum 10 lines)..."
+          placeholder="Paste your text here (minimum 500 characters)..."
           style={{ borderRadius: '15px', resize: 'none' }}
         />
       </InputGroup>
