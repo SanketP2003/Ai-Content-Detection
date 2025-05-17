@@ -13,7 +13,7 @@ const App = () => {
         <Route path="*" element={<Navigate to="/" />} /> {/* Redirect unknown routes */}
       </Routes>
     </Router>
-  );
+  );// App.jsx
 };
 
 export default App;
